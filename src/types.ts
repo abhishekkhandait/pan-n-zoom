@@ -1,7 +1,7 @@
 export interface PanZoomOptions {
-  el: HTMLElement | SVGElement;
-  minZoom: number;
-  maxZoom: number;
+  minZoom?: number;
+  maxZoom?: number;
+  pinchSpeed?: number;
 }
 
 export interface BBox {
@@ -9,4 +9,9 @@ export interface BBox {
   top: number;
   width: number;
   height: number;
+}
+
+export interface Point {
+  x: number;
+  y: number;
 }
