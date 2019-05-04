@@ -17,6 +17,8 @@ module.exports = (env, argv) => ({
   },
   output: {
     filename: `index.${argv.mode}.js`,
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    library: "PanZoom",
+    libraryTarget: "umd"
   }
 });
