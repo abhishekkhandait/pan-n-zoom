@@ -2,7 +2,7 @@ import PanZoomController from "./panZoomCtrl";
 import Transform from "../utils/transform";
 import { BBox, PanZoomOptions } from "../types";
 
-export class DomHandler extends PanZoomController {
+export class DomController extends PanZoomController {
   constructor(
     private domElement: HTMLElement,
     private options: PanZoomOptions

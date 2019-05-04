@@ -2,7 +2,7 @@ import PanZoomController from "./panZoomCtrl";
 import { PanZoomOptions, BBox } from "../types";
 import Transform from "../utils/transform";
 
-export default class SvgHandler extends PanZoomController {
+export default class SvgController extends PanZoomController {
   constructor(
     private svgElement: SVGGraphicsElement,
     private options: PanZoomOptions
