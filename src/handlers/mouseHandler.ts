@@ -1,12 +1,14 @@
-import { Scene } from "../scene";
+import Scene from "../scene";
 import Transform from "../utils/transform";
 
-export class MouseEventsHandler {
+export default class MouseEventsHandler {
   constructor(private scene: Scene) {}
 
   public activate() {
     this.scene.owner.addEventListener("mousedown", this.onMouseDown);
-    this.scene.owner.addEventListener("wheel", this.onMouseWheel);
+    this.scene.owner.addEventListener("wheel", this.onMouseWheel, {
+      passive: false
+    });
   }
 
   public deactivate() {
@@ -26,7 +28,9 @@ export class MouseEventsHandler {
     // for Firefox, left click == 0
     const isLeftButton =
       (event.button === 1 && window.event !== null) || event.button === 0;
-    if (!isLeftButton) return;
+    if (!isLeftButton) {
+      return;
+    }
 
     // smoothScroll.cancel();
 
@@ -45,14 +49,16 @@ export class MouseEventsHandler {
 
   private onMouseMove = (event: MouseEvent) => {
     // no need to worry about mouse events when touch is happening
-    if (this.scene.touchInProgress) return;
+    if (this.scene.touchInProgress) {
+      return;
+    }
 
     this.scene.triggerPanStart();
 
     const offset = Transform.getOffsetXY(event, this.scene.owner);
     const point = this.scene.transformToScreen(offset);
-    var dx = point.x - this.scene.mousePt.x;
-    var dy = point.y - this.scene.mousePt.y;
+    const dx = point.x - this.scene.mousePt.x;
+    const dy = point.y - this.scene.mousePt.y;
 
     this.scene.mousePt = point;
 
@@ -83,13 +89,13 @@ export class MouseEventsHandler {
     // document.removeEventListener("wheel", this.onMouseWheel);
   }
 
-  private getScaleMultiplier(delta: number, zoomSpeed: number = 0.065) {
+  private getScaleMultiplier(delta: number, zoomSpeed: number = 0.035) {
     let scaleMultiplier = 1;
 
-    if (delta > 0) {
+    if (delta < 0) {
       // zoom out
       scaleMultiplier = 1 - zoomSpeed;
-    } else if (delta < 0) {
+    } else if (delta > 0) {
       // zoom in
       scaleMultiplier = 1 + zoomSpeed;
     }

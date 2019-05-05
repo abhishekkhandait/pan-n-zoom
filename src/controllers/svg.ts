@@ -1,6 +1,6 @@
-import PanZoomController from "./panZoomCtrl";
-import { PanZoomOptions, BBox } from "../types";
+import { BBox, PanZoomOptions } from "../types";
 import Transform from "../utils/transform";
+import PanZoomController from "./panZoomCtrl";
 
 export default class SvgController extends PanZoomController {
   constructor(
@@ -22,7 +22,7 @@ export default class SvgController extends PanZoomController {
   }
 
   public getBoundingBox(): BBox {
-    var bbox = this.svgElement.getBBox();
+    const bbox = this.svgElement.getBBox();
     return {
       left: bbox.x,
       top: bbox.y,
@@ -46,7 +46,7 @@ export default class SvgController extends PanZoomController {
   }
 
   public initTransform(transform: Transform) {
-    var screenCTM = this.svgElement.getScreenCTM();
+    const screenCTM = this.svgElement.getScreenCTM();
     transform.x = screenCTM.e;
     transform.y = screenCTM.f;
     transform.scale = screenCTM.a;
@@ -55,7 +55,9 @@ export default class SvgController extends PanZoomController {
 
   public getSvgTransformMatrix(): SVGTransform {
     const baseVal = this.svgElement.transform.baseVal;
-    if (baseVal.numberOfItems) return baseVal.getItem(0);
+    if (baseVal.numberOfItems) {
+      return baseVal.getItem(0);
+    }
     const transform = (this.owner as SVGSVGElement).createSVGTransform();
     this.svgElement.transform.baseVal.appendItem(transform);
     return transform;

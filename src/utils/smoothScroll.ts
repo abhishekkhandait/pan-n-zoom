@@ -1,10 +1,10 @@
-import { Scene } from "../scene";
+import Scene from "../scene";
 import { Point } from "../types";
 
 /**
  * Allows smooth kinetic scrolling of the surface
  */
-export class SmoothScroll {
+export default class SmoothScroll {
   private minVelocity = 5;
   private amplitude = 0.25;
   private timeConstant = 342;
@@ -100,15 +100,12 @@ export class SmoothScroll {
     if (this.amp.x) {
       d.x = -this.amp.x * Math.exp(-elapsed / this.timeConstant);
 
-      if (d.x > 0.5 || d.x < -0.5) moving = true;
-      else d.x = this.amp.x = 0;
+      d.x > 0.5 || d.x < -0.5 ? (moving = true) : (d.x = this.amp.x = 0);
     }
 
     if (this.amp.y) {
       d.y = -this.amp.y * Math.exp(-elapsed / this.timeConstant);
-
-      if (d.y > 0.5 || d.y < -0.5) moving = true;
-      else d.y = this.amp.y = 0;
+      d.y > 0.5 || d.y < -0.5 ? (moving = true) : (d.y = this.amp.y = 0);
     }
 
     if (moving) {

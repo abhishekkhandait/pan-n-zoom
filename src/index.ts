@@ -1,5 +1,5 @@
+import Scene from "./scene";
 import { PanZoomOptions } from "./types";
-import { Scene } from "./scene";
 
 export const init = (
   element: HTMLElement | SVGElement,

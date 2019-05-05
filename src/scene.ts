@@ -1,29 +1,29 @@
+import DomController from "./controllers/dom";
 import PanZoomController from "./controllers/panZoomCtrl";
-import { PanZoomOptions, Point } from "./types";
 import SvgController from "./controllers/svg";
-import { EventEmitter } from "./utils/eventEmitter";
+import MouseEventsHandler from "./handlers/mouseHandler";
+import TouchEventsHandler from "./handlers/touchHandler";
+import { PanZoomOptions, Point } from "./types";
+import EventEmitter from "./utils/eventEmitter";
+import SmoothScroll from "./utils/smoothScroll";
 import Transform from "./utils/transform";
-import { SmoothScroll } from "./utils/smoothScroll";
-import { MouseEventsHandler } from "./handlers/mouseHandler";
-import { TouchEventsHandler } from "./handlers/touchHandler";
-import { DomController } from "./controllers/dom";
 
-export class Scene {
+export default class Scene {
   public transform: Transform = {
+    scale: 1,
     x: 0,
-    y: 0,
-    scale: 1
+    y: 0
   };
   public readonly owner: HTMLElement | SVGElement;
   public readonly eventEmitter: EventEmitter;
   public touchInProgress: boolean = false;
   public multitouchActive: boolean = false;
   public mousePt: Point;
+  public smoothScroll: SmoothScroll;
 
   private controller: PanZoomController;
   private mouseHandler: MouseEventsHandler;
   private touchHandler: TouchEventsHandler;
-  public smoothScroll: SmoothScroll;
 
   private currentTransformedPoint: Point = {
     x: 0,
@@ -53,17 +53,6 @@ export class Scene {
     this.makeDirty();
   }
 
-  private createController() {
-    if (this.element instanceof SVGGraphicsElement) {
-      this.controller = new SvgController(this.element, this.options);
-      (this.controller as SvgController).initTransform(this.transform);
-    }
-
-    if (this.element instanceof HTMLElement) {
-      this.controller = new DomController(this.element, this.options);
-    }
-  }
-
   public moveBy(dx: number, dy: number) {
     this.moveTo({
       x: this.transform.x + dx,
@@ -82,12 +71,16 @@ export class Scene {
   public zoomTo(point: Point, scaleMultiplier: number) {
     const newScale = this.transform.scale * scaleMultiplier;
     if (newScale < this.options.minZoom) {
-      if (this.transform.scale === this.options.minZoom) return;
+      if (this.transform.scale === this.options.minZoom) {
+        return;
+      }
 
       scaleMultiplier = this.options.minZoom / this.transform.scale;
     }
     if (newScale > this.options.maxZoom) {
-      if (this.transform.scale === this.options.maxZoom) return;
+      if (this.transform.scale === this.options.maxZoom) {
+        return;
+      }
 
       scaleMultiplier = this.options.maxZoom / this.transform.scale;
     }
@@ -139,6 +132,17 @@ export class Scene {
     return this.currentTransformedPoint;
   }
 
+  private createController() {
+    if (this.element instanceof SVGGraphicsElement) {
+      this.controller = new SvgController(this.element, this.options);
+      (this.controller as SvgController).initTransform(this.transform);
+    }
+
+    if (this.element instanceof HTMLElement) {
+      this.controller = new DomController(this.element, this.options);
+    }
+  }
+
   private applyTransform() {
     this.isDirty = false;
 
@@ -149,9 +153,7 @@ export class Scene {
     this.frameAnimation = 0;
   }
 
-  private frame = () => {
-    this.isDirty && this.applyTransform();
-  };
+  private frame = () => this.isDirty && this.applyTransform();
 
   private makeDirty() {
     this.isDirty = true;

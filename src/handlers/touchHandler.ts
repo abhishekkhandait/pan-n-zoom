@@ -1,10 +1,10 @@
-import { Scene } from "../scene";
+import Scene from "../scene";
 import Transform from "../utils/transform";
 
-export class TouchEventsHandler {
+export default class TouchEventsHandler {
   private pinchZoomLength: number;
   private pinchSpeed: number = 1;
-  private lastTouchEndTime: Date;
+  private lastTouchEndTime: number = 0;
   private doubleTapSpeedInMS: number = 300;
   private doubleTapZoomSpeed = 1.75;
   private multiTouch: boolean;
@@ -77,8 +77,10 @@ export class TouchEventsHandler {
       this.scene.zoomTo(this.scene.mousePt, scaleMultiplier);
 
       this.pinchZoomLength = currentPinchLength;
-      event.stopPropagation();
-      event.preventDefault();
+      if (event.cancelable) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
     }
   };
 
@@ -90,14 +92,11 @@ export class TouchEventsHandler {
       );
     } else {
       const now = new Date();
-      if (
-        now.valueOf() - this.lastTouchEndTime.valueOf() <
-        this.doubleTapSpeedInMS
-      ) {
+      if (now.valueOf() - this.lastTouchEndTime < this.doubleTapSpeedInMS) {
         this.scene.zoomTo(this.scene.mousePt, this.doubleTapZoomSpeed);
       }
 
-      this.lastTouchEndTime = now;
+      this.lastTouchEndTime = now.valueOf();
 
       this.scene.touchInProgress = false;
       this.scene.triggerPanEnd();
@@ -114,9 +113,15 @@ export class TouchEventsHandler {
   private addTouchListners() {
     if (!this.scene.touchInProgress) {
       this.scene.touchInProgress = true;
-      document.addEventListener("touchmove", this.onTouchMove);
-      document.addEventListener("touchend", this.onTouchEnd);
-      document.addEventListener("touchcancel", this.onTouchEnd);
+      document.addEventListener("touchmove", this.onTouchMove, {
+        passive: false
+      });
+      document.addEventListener("touchend", this.onTouchEnd, {
+        passive: false
+      });
+      document.addEventListener("touchcancel", this.onTouchEnd, {
+        passive: false
+      });
     }
   }
 

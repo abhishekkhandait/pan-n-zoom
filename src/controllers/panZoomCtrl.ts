@@ -1,9 +1,8 @@
-import Transform from "../utils/transform";
 import { BBox } from "../types";
+import Transform from "../utils/transform";
 
 export default abstract class PanZoomController {
   protected owner: SVGSVGElement | HTMLElement;
-  public readonly element: SVGElement | HTMLElement;
 
   public getOwner() {
     return this.owner;

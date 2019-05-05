@@ -1,10 +1,10 @@
-import PanZoomController from "./panZoomCtrl";
-import Transform from "../utils/transform";
 import { BBox, PanZoomOptions } from "../types";
+import Transform from "../utils/transform";
+import PanZoomController from "./panZoomCtrl";
 
-export class DomController extends PanZoomController {
+export default class DomController extends PanZoomController {
   constructor(
-    private domElement: HTMLElement,
+    private readonly domElement: HTMLElement,
     private options: PanZoomOptions
   ) {
     super();
@@ -29,8 +29,8 @@ export class DomController extends PanZoomController {
   }
 
   public applyTransform(transform: Transform) {
-    this.element.style.transformOrigin = "0 0 0";
-    this.element.style.transform = `matrix(${transform.scale}, 0, 0, ${
+    this.domElement.style.transformOrigin = "0 0 0";
+    this.domElement.style.transform = `matrix(${transform.scale}, 0, 0, ${
       transform.scale
     }, ${transform.x}, ${transform.y})`;
   }

@@ -1,6 +1,6 @@
 type Listener = (...args: any[]) => void;
 
-export class EventEmitter {
+export default class EventEmitter {
   private readonly events: Map<string, Array<Listener>>;
 
   constructor() {
