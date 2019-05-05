@@ -1,9 +1,18 @@
-.vscode
+# folders
 node_modules
+examples
 src
-.gitignore
+.vscode
+
+# config files
 tsconfig.json
 tslint.json
 webpack.config.json
 yarn.lock
-examples
+
+# ignorefiles
+.gitignore
+.npmignore
+
+# ci
+.travis.yml
