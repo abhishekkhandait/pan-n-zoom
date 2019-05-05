@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist/",
     "outDir": "./dist/",
     "noImplicitAny": true,
     "sourceMap": true,
     "module": "es6",
-    "target": "esnext",
-    "allowJs": true
+    "target": "esnext"
   }
 }
