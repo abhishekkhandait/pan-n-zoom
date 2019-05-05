@@ -3,7 +3,6 @@ node_js:
     - "stable"
 cache: yarn
 script:
-    - yarn test
     - yarn build:prod
 on:
     branch: master
