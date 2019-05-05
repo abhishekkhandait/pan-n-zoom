@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = (env, argv) => ({
   entry: "./src/index.ts",
-  devtool: "inline-source-map",
+  devtool: argv.mode === "development" ? "inline-source-map" : "none",
   module: {
     rules: [
       {
@@ -16,7 +16,7 @@ module.exports = (env, argv) => ({
     extensions: [".tsx", ".ts", ".js"]
   },
   output: {
-    filename: `index.${argv.mode}.js`,
+    filename: `pannzoom${argv.mode === "development" ? "" : ".min"}.js`,
     path: path.resolve(__dirname, "dist"),
     library: "PanZoom",
     libraryTarget: "umd"
