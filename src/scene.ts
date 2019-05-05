@@ -6,9 +6,14 @@ import Transform from "./utils/transform";
 import { SmoothScroll } from "./utils/smoothScroll";
 import { MouseEventsHandler } from "./handlers/mouseHandler";
 import { TouchEventsHandler } from "./handlers/touchHandler";
+import { DomController } from "./controllers/dom";
 
 export class Scene {
-  public transform: Transform;
+  public transform: Transform = {
+    x: 0,
+    y: 0,
+    scale: 1
+  };
   public readonly owner: HTMLElement | SVGElement;
   public readonly eventEmitter: EventEmitter;
   public touchInProgress: boolean = false;
@@ -25,11 +30,18 @@ export class Scene {
     y: 0
   };
 
+  private isDirty = false;
+  private frameAnimation: number;
+
   constructor(
     private element: HTMLElement | SVGElement,
     public readonly options: PanZoomOptions = {}
   ) {
     this.transform = new Transform();
+
+    this.createController();
+    this.owner = this.controller.getOwner();
+
     this.mouseHandler = new MouseEventsHandler(this);
     this.touchHandler = new TouchEventsHandler(this);
     this.eventEmitter = new EventEmitter();
@@ -37,6 +49,19 @@ export class Scene {
 
     this.mouseHandler.activate();
     this.touchHandler.activate();
+
+    this.makeDirty();
+  }
+
+  private createController() {
+    if (this.element instanceof SVGGraphicsElement) {
+      this.controller = new SvgController(this.element, this.options);
+      (this.controller as SvgController).initTransform(this.transform);
+    }
+
+    if (this.element instanceof HTMLElement) {
+      this.controller = new DomController(this.element, this.options);
+    }
   }
 
   public moveBy(dx: number, dy: number) {
@@ -49,6 +74,9 @@ export class Scene {
   public moveTo(point: Point) {
     this.transform.x = point.x;
     this.transform.y = point.y;
+
+    this.eventEmitter.emit("pan");
+    this.makeDirty();
   }
 
   public zoomTo(point: Point, scaleMultiplier: number) {
@@ -77,7 +105,7 @@ export class Scene {
 
     this.eventEmitter.emit("zoom");
 
-    // makeDirty();
+    this.makeDirty();
   }
 
   public triggerPanStart() {
@@ -109,6 +137,25 @@ export class Scene {
     }
 
     return this.currentTransformedPoint;
+  }
+
+  private applyTransform() {
+    this.isDirty = false;
+
+    // TODO: Should I allow to cancel this?
+    this.controller.applyTransform(this.transform);
+
+    this.eventEmitter.emit("transform");
+    this.frameAnimation = 0;
+  }
+
+  private frame = () => {
+    this.isDirty && this.applyTransform();
+  };
+
+  private makeDirty() {
+    this.isDirty = true;
+    this.frameAnimation = window.requestAnimationFrame(this.frame);
   }
 
   private isValidPoint(point: Point) {
