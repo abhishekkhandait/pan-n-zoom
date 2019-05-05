@@ -1,17 +1,19 @@
 export interface PanZoomOptions {
-  minZoom?: number;
-  maxZoom?: number;
-  pinchSpeed?: number;
+	minZoom?: number;
+	maxZoom?: number;
+	pinchSpeed?: number;
 }
 
 export interface BBox {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
+	left: number;
+	top: number;
+	width: number;
+	height: number;
 }
 
 export interface Point {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 }
+
+export type Listener = (...args: any[]) => void;

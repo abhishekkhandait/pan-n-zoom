@@ -3,63 +3,63 @@ import Transform from "../utils/transform";
 import PanZoomController from "./panZoomCtrl";
 
 export default class SvgController extends PanZoomController {
-  constructor(
-    private svgElement: SVGGraphicsElement,
-    private options: PanZoomOptions
-  ) {
-    super();
-    if (!(svgElement instanceof SVGGraphicsElement)) {
-      throw new Error("Pan zoom only works on svg or HTMLElement");
-    }
+	constructor(
+		private svgElement: SVGGraphicsElement,
+		private options: PanZoomOptions
+	) {
+		super();
+		if (!(svgElement instanceof SVGGraphicsElement)) {
+			throw new Error("Pan zoom only works on svg or HTMLElement");
+		}
 
-    this.owner = svgElement.ownerSVGElement;
+		this.owner = svgElement.ownerSVGElement;
 
-    if (!this.owner) {
-      throw new Error(
-        "Donot apply panzoom to <svg> element. Apply it on its child instead"
-      );
-    }
-  }
+		if (!this.owner) {
+			throw new Error(
+				"Donot apply panzoom to <svg> element. Apply it on its child instead"
+			);
+		}
+	}
 
-  public getBoundingBox(): BBox {
-    const bbox = this.svgElement.getBBox();
-    return {
-      left: bbox.x,
-      top: bbox.y,
-      width: bbox.width,
-      height: bbox.height
-    };
-  }
+	public getBoundingBox(): BBox {
+		const bbox = this.svgElement.getBBox();
+		return {
+			left: bbox.x,
+			top: bbox.y,
+			width: bbox.width,
+			height: bbox.height
+		};
+	}
 
-  public getScreenCTM(): DOMMatrix {
-    return (this.owner as SVGSVGElement).getScreenCTM();
-  }
+	public getScreenCTM(): DOMMatrix {
+		return (this.owner as SVGSVGElement).getScreenCTM();
+	}
 
-  public applyTransform(transform: Transform) {
-    this.svgElement.setAttribute(
-      "transform",
-      `matrix(
+	public applyTransform(transform: Transform) {
+		this.svgElement.setAttribute(
+			"transform",
+			`matrix(
           ${transform.scale} 0 0 ${transform.scale}
           ${transform.x} ${transform.y}
         )`
-    );
-  }
+		);
+	}
 
-  public initTransform(transform: Transform) {
-    const screenCTM = this.svgElement.getScreenCTM();
-    transform.x = screenCTM.e;
-    transform.y = screenCTM.f;
-    transform.scale = screenCTM.a;
-    this.owner.removeAttributeNS(null, "viewBox");
-  }
+	public initTransform(transform: Transform) {
+		const screenCTM = this.svgElement.getScreenCTM();
+		transform.x = screenCTM.e;
+		transform.y = screenCTM.f;
+		transform.scale = screenCTM.a;
+		this.owner.removeAttributeNS(null, "viewBox");
+	}
 
-  public getSvgTransformMatrix(): SVGTransform {
-    const baseVal = this.svgElement.transform.baseVal;
-    if (baseVal.numberOfItems) {
-      return baseVal.getItem(0);
-    }
-    const transform = (this.owner as SVGSVGElement).createSVGTransform();
-    this.svgElement.transform.baseVal.appendItem(transform);
-    return transform;
-  }
+	public getSvgTransformMatrix(): SVGTransform {
+		const baseVal = this.svgElement.transform.baseVal;
+		if (baseVal.numberOfItems) {
+			return baseVal.getItem(0);
+		}
+		const transform = (this.owner as SVGSVGElement).createSVGTransform();
+		this.svgElement.transform.baseVal.appendItem(transform);
+		return transform;
+	}
 }
