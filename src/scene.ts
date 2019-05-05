@@ -33,10 +33,7 @@ export default class Scene {
 	private isDirty = false;
 	private frameAnimation: number;
 
-	constructor(
-		private element: HTMLElement | SVGElement,
-		public readonly options: PanZoomOptions = {}
-	) {
+	constructor(private element: HTMLElement | SVGElement, public readonly options: PanZoomOptions = {}) {
 		this.transform = new Transform();
 
 		this.createController();
@@ -87,10 +84,8 @@ export default class Scene {
 
 		const screenPt = this.transformToScreen(point);
 
-		this.transform.x =
-			screenPt.x - scaleMultiplier * (screenPt.x - this.transform.x);
-		this.transform.y =
-			screenPt.y - scaleMultiplier * (screenPt.y - this.transform.y);
+		this.transform.x = screenPt.x - scaleMultiplier * (screenPt.x - this.transform.x);
+		this.transform.y = screenPt.y - scaleMultiplier * (screenPt.y - this.transform.y);
 
 		// const transformAdjusted = this.keepTransformInsideBounds();
 		// if (!transformAdjusted) transform.scale *= ratio;

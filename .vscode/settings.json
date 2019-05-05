@@ -5,5 +5,6 @@
 		"source.fixAll.tslint": true
 	},
 	"prettier.useTabs": true,
-	"prettier.tabWidth": 4
+	"prettier.tabWidth": 4,
+	"prettier.printWidth": 250
 }

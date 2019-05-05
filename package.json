@@ -1,6 +1,6 @@
 {
 	"name": "pan-n-zoom",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"description": "panning and zooming library",
 	"main": "dist/pannzoom.min.js",
 	"types": "dist/index.d.ts",
