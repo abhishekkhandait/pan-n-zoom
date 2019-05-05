@@ -16,7 +16,9 @@ export class SmoothScroll {
   private velocity: Point;
   private target: Point;
 
-  constructor(private scene: Scene) {}
+  constructor(private scene: Scene) {
+    this.reset();
+  }
 
   public start() {
     this.lastPoint = this.getCurrentTransformPoint();
@@ -89,7 +91,7 @@ export class SmoothScroll {
     };
   };
 
-  private autoScroll() {
+  private autoScroll = () => {
     const elapsed = new Date().valueOf() - this.timeStamp.valueOf();
 
     let moving = false;
@@ -113,7 +115,7 @@ export class SmoothScroll {
       this.scene.moveTo({ x: this.target.x + d.x, y: this.target.y + d.y });
       this.raf = window.requestAnimationFrame(this.autoScroll);
     }
-  }
+  };
 
   private getCurrentTransformPoint(): Point {
     return {
