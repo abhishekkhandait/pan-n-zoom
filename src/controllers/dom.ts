@@ -16,7 +16,7 @@ export default class DomController extends PanZoomController {
 			throw new Error("Donot apply panzoom to detached DOM element");
 		}
 
-		this.scrollbar = HTMLScrollbar.create(this.owner);
+		this.scrollbar = new HTMLScrollbar(this.owner, this.domElement);
 	}
 
 	public getBoundingBox(): BBox {
@@ -31,5 +31,6 @@ export default class DomController extends PanZoomController {
 	public applyTransform(transform: Transform) {
 		this.domElement.style.transformOrigin = "0 0 0";
 		this.domElement.style.transform = `matrix(${transform.scale}, 0, 0, ${transform.scale}, ${transform.x}, ${transform.y})`;
+		this.scrollbar.scrollthumbSize();
 	}
 }

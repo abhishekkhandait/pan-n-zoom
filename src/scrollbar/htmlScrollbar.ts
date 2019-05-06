@@ -6,16 +6,12 @@ export interface ScrollSettings {
 }
 
 export class HTMLScrollbar {
-	public static create(container: HTMLElement, options?: ScrollSetting) {
-		return new HTMLScrollbar(container, options);
-	}
-
 	private htrack: HTMLElement;
 	private hthumb: HTMLElement;
 	private vtrack: HTMLElement;
 	private vthumb: HTMLElement;
 
-	private constructor(private container: HTMLElement, private options?: ScrollSetting) {
+	public constructor(private container: HTMLElement, private content: HTMLElement, private options?: ScrollSetting) {
 		this.createScrollbar();
 	}
 
@@ -32,6 +28,25 @@ export class HTMLScrollbar {
 	public hide() {
 		this.htrack.classList.add("inactive");
 		this.vtrack.classList.add("inactive");
+	}
+
+	public scrollthumbSize() {
+		const contentBBox = this.content.getBoundingClientRect();
+		const containerBBox = this.container.getBoundingClientRect();
+		const hScrollWidth = this.container.offsetWidth;
+		const vScrollHeight = this.container.offsetHeight;
+
+		const hThumbWidth = (1 - (contentBBox.width - hScrollWidth) / contentBBox.width) * hScrollWidth;
+		this.hthumb.style.width = `${hThumbWidth}px`;
+		const relativeLeft = hScrollWidth - hThumbWidth;
+		const dx = ((containerBBox.left - contentBBox.left) / contentBBox.width) * relativeLeft;
+		this.hthumb.style.left = `${dx}px`;
+
+		const vThumbHeight = (1 - (contentBBox.height - vScrollHeight) / contentBBox.height) * vScrollHeight;
+		this.vthumb.style.height = `${vThumbHeight}px`;
+		const relativeTop = vScrollHeight - vThumbHeight;
+		const dy = ((containerBBox.top - contentBBox.top) / contentBBox.height) * relativeTop;
+		this.vthumb.style.top = `${dy}px`;
 	}
 
 	private createScrollbar() {
