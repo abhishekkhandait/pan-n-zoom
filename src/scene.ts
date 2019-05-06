@@ -91,6 +91,12 @@ export default class Scene {
 		// if (!transformAdjusted) transform.scale *= ratio;
 		this.transform.scale *= scaleMultiplier;
 
+		if (this.transform.scale > 1) {
+			this.controller.Scrollbar.show();
+		} else {
+			this.controller.Scrollbar.hide();
+		}
+
 		this.eventEmitter.emit("zoom");
 
 		this.makeDirty();
